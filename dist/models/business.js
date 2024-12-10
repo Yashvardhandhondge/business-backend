@@ -36,13 +36,18 @@ const MetricSchema = new mongoose_1.Schema({
     value: { type: Number, required: true, default: 0 },
     notes: { type: [String], default: [] }
 });
+const AttachmentSchema = new mongoose_1.Schema({
+    url: { type: String, required: true },
+    name: { type: String, default: "" }
+});
 const businessSchema = new mongoose_1.Schema({
     user_id: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User' },
     business_name: { type: String, required: true },
     business_notes: { type: String },
     business_location: { type: String },
     business_url: { type: String },
-    business_attachments: { type: [String], default: [] },
+    business_attachments: { type: [AttachmentSchema], default: [] },
+    updated_at: { type: Date, default: Date.now },
     //Independent Metrics
     asking_price: MetricSchema, //Asking Price
     gross_revenue: MetricSchema,
@@ -76,6 +81,10 @@ const businessSchema = new mongoose_1.Schema({
     total_debt_payments: MetricSchema,
     projected_net_profit_margin: MetricSchema,
     custom_fields: [customFieldsSchema]
+});
+businessSchema.pre('save', function (next) {
+    this.updated_at = new Date();
+    next();
 });
 exports.default = mongoose_1.default.model('Business', businessSchema);
 //# sourceMappingURL=business.js.map

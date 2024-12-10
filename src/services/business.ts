@@ -94,9 +94,9 @@ export const deleteMetric = async (id: string, body: any) => {
     return business;
 };
 
-const uploadFile = async (id: string, fileUrl: string) => {
+const uploadFile = async (id: string, fileUrl: string, fileName: string) => {
     const business = await db.business.findByIdAndUpdate(id, 
-        { $push: {business_attachments: fileUrl}
+        { $push: {business_attachments: {url: fileUrl, name: fileName}}
     },{new:true});
     return business;
 };

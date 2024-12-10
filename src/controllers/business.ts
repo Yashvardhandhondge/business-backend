@@ -70,7 +70,7 @@ export const uploadFiles = catchAsync(async (req: Request, res: Response) => {
   
     //@ts-ignore
     const file = req.file;
-    const fileKey = `${uuidv4()}.pdf`;
+    const fileKey = `${uuidv4()}.${file.originalname.split(".")[1]}`;
   
     // Upload the file to S3
     const uploadParams = {
@@ -91,10 +91,10 @@ export const uploadFiles = catchAsync(async (req: Request, res: Response) => {
     };
   
     const presignedUrl = await getSignedUrl(s3Client, new GetObjectCommand(getObjectParams), {
-      expiresIn: 60 * 60, // URL expires in 1 hour
+      expiresIn: 60 * 60 * 24 * 1, // URL expires in 5 years
     });
   
     // Update the business record with the presigned URL
-    const updatedBusiness = await businessService.uploadFile(req.params.id, presignedUrl);
+    const updatedBusiness = await businessService.uploadFile(req.params.id, presignedUrl, file.originalname);
     res.status(httpStatus.OK).json({ updatedBusiness, presignedUrl });
   });

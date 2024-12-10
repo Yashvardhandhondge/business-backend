@@ -71,7 +71,7 @@ exports.uploadFiles = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
     }
     //@ts-ignore
     const file = req.file;
-    const fileKey = `${(0, uuid_1.v4)()}.pdf`;
+    const fileKey = `${(0, uuid_1.v4)()}.${file.originalname.split(".")[1]}`;
     // Upload the file to S3
     const uploadParams = {
         Bucket: process.env.AWS_BUCKET_NAME,
@@ -88,10 +88,10 @@ exports.uploadFiles = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
         Key: fileKey,
     };
     const presignedUrl = yield (0, s3_request_presigner_1.getSignedUrl)(s3Client, new client_s3_1.GetObjectCommand(getObjectParams), {
-        expiresIn: 60 * 60, // URL expires in 1 hour
+        expiresIn: 60 * 60 * 24 * 1, // URL expires in 5 years
     });
     // Update the business record with the presigned URL
-    const updatedBusiness = yield business_1.default.uploadFile(req.params.id, presignedUrl);
+    const updatedBusiness = yield business_1.default.uploadFile(req.params.id, presignedUrl, file.originalname);
     res.status(http_status_1.default.OK).json({ updatedBusiness, presignedUrl });
 }));
 //# sourceMappingURL=business.js.map

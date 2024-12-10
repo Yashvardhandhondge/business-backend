@@ -92,8 +92,8 @@ const deleteMetric = (id, body) => __awaiter(void 0, void 0, void 0, function* (
     return business;
 });
 exports.deleteMetric = deleteMetric;
-const uploadFile = (id, fileUrl) => __awaiter(void 0, void 0, void 0, function* () {
-    const business = yield models_1.default.business.findByIdAndUpdate(id, { $push: { business_attachments: fileUrl }
+const uploadFile = (id, fileUrl, fileName) => __awaiter(void 0, void 0, void 0, function* () {
+    const business = yield models_1.default.business.findByIdAndUpdate(id, { $push: { business_attachments: { url: fileUrl, name: fileName } }
     }, { new: true });
     return business;
 });
